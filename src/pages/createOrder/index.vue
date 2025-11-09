@@ -5,18 +5,80 @@
             填写服务订单
         </div>
         <statusBar item="0" />
+        <van-cell class="cell">
+            <template #title>
+                <van-image width="25" height="25" :src="createInfo.service.serviceImg" />
+                <span class="service-name">{{ createInfo.service.serviceName }}</span>
+            </template>
+            <template #default>
+                <div class="service-text">内容</div>
+            </template>
+        </van-cell>
+        <van-cell-group class="cell">
+            <van-cell>
+                <template #title>就诊医院</template>
+                <template #default>
+                    <div @click="showHospital = true" class="service-text">
+                        {{ form.hospital_name || "请选择就诊医院" }}
+                        <van-icon name="arrow" />
+                    </div>
+                </template>
+            </van-cell>
+        </van-cell-group>
+
+        <!-- 底部弹出层 -->
+        <van-popup v-model:show="showHospital" position="bottom" :style="{ height: '30%' }">
+            <!-- 弹出层里面的选择器，数据由计算属性获取，confirm方法把选中数据传给form -->
+            <van-picker :columns="showHospColumns" @confirm="showHospConfirm" @cancel="showHospital = false" />
+        </van-popup>
+
     </div>
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
 import statusBar from '../../components/statusBar.vue'
+import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue';
+
+const { proxy } = getCurrentInstance()
+
+const createInfo = reactive({
+    companion: [],
+    hospitals: [],
+    service: {}
+})
+
+onMounted(async () => {
+    const { data } = await proxy.$api.h5Companion()
+    // console.log(data, "data")
+    Object.assign(createInfo, data.data)
+})
 
 const router = useRouter()
-
+// 返回
 const goBack = () => {
     router.go(-1)
 }
 
+// form数据
+const form = reactive({
+    hospital_id: '',
+    hospital_name: ''
+})
+// 就诊医院
+const showHospital = ref(false)
+const showHospColumns = computed(() => {
+    return createInfo.hospitals.map(item => {
+        return { text: item.name, value: item.id }
+    })
+})
+// 选择医院
+const showHospConfirm = (item) => {
+    console.log(item, "item")
+    form.hospital_id = item.selectedOptions[0].value
+    form.hospital_name = item.selectedOptions[0].text
+    // 关闭弹出层
+    showHospital.value = false
+}
 </script>
 <style scoped>
 .container {

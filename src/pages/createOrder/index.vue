@@ -24,12 +24,25 @@
                     </div>
                 </template>
             </van-cell>
+            <van-cell>
+                <template #title>就诊时间</template>
+                <template #default>
+                    <div @click="showStartTime = true" class="service-text">
+                        {{ currentDate || "请选择就诊时间" }}
+                        <van-icon name="arrow" />
+                    </div>
+                </template>
+            </van-cell>
         </van-cell-group>
 
         <!-- 底部弹出层 -->
         <van-popup v-model:show="showHospital" position="bottom" :style="{ height: '30%' }">
             <!-- 弹出层里面的选择器，数据由计算属性获取，confirm方法把选中数据传给form -->
             <van-picker :columns="showHospColumns" @confirm="showHospConfirm" @cancel="showHospital = false" />
+        </van-popup>
+        <van-popup v-model:show="showStartTime" position="bottom" :style="{ height: '30%' }">
+            <van-date-picker @confirm="showTimeConfirm" @cancel="showStartTime = false" title="选择日期"
+                :min-date="minDate" />
         </van-popup>
 
     </div>
@@ -62,7 +75,12 @@ const goBack = () => {
 // form数据
 const form = reactive({
     hospital_id: '',
-    hospital_name: ''
+    hospital_name: '',
+    demand: '',
+    companion_id: '',
+    receiveAddress: '',
+    tel: '',
+    starttime: ''
 })
 // 就诊医院
 const showHospital = ref(false)
@@ -78,6 +96,20 @@ const showHospConfirm = (item) => {
     form.hospital_name = item.selectedOptions[0].text
     // 关闭弹出层
     showHospital.value = false
+}
+
+// 选择就诊时间
+const showStartTime = ref(false)
+const currentDate = ref()
+// 最小日期
+const minDate = ref(new Date())
+const showTimeConfirm = (item) => {
+    // console.log(item, "item")
+    const dateStr = item.selectedValues.join('-')
+    // console.log(dateStr, "dateStr")
+    currentDate.value = dateStr
+    form.starttime = new Date(dateStr).getTime()
+    showStartTime.value = false
 }
 </script>
 <style scoped>

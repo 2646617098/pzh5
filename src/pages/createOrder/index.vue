@@ -11,14 +11,14 @@
                 <span class="service-name">{{ createInfo.service.serviceName }}</span>
             </template>
             <template #default>
-                <div class="service-text">内容</div>
+                <div class="service-text">服务内容</div>
             </template>
         </van-cell>
         <van-cell-group class="cell">
             <van-cell>
                 <template #title>就诊医院</template>
                 <template #default>
-                    <div @click="showHospital = true" class="service-text">
+                    <div @click="showHospital = true">
                         {{ form.hospital_name || "请选择就诊医院" }}
                         <van-icon name="arrow" />
                     </div>
@@ -27,13 +27,39 @@
             <van-cell>
                 <template #title>就诊时间</template>
                 <template #default>
-                    <div @click="showStartTime = true" class="service-text">
+                    <div @click="showStartTime = true">
                         {{ currentDate || "请选择就诊时间" }}
                         <van-icon name="arrow" />
                     </div>
                 </template>
             </van-cell>
+            <van-cell>
+                <template #title>陪诊师</template>
+                <template #default>
+                    <div @click="showCompanion = true">
+                        {{ companionName || "请选择陪诊师" }}
+                        <van-icon name="arrow" />
+                    </div>
+                </template>
+            </van-cell>
+            <van-cell>
+                <template #title>接送地址</template>
+                <template #default>
+                    <van-field class="text" input-align="right" v-model="form.receiveAddress" placeholder="请填写接送地址" />
+                </template>
+            </van-cell>
+            <van-cell>
+                <template #title>联系电话</template>
+                <template #default>
+                    <van-field class="text" input-align="right" v-model="form.tel" placeholder="请填写联系电话" />
+                </template>
+            </van-cell>
         </van-cell-group>
+        <van-cell-group title="服务需求" class="cell">
+            <van-field class="text" style="height: 100px" v-model="form.demand" placeholder="请简单描述您要就诊的科室.." />
+        </van-cell-group>
+        <van-button class="submit" type="primary" size="large" @click="submit">提交订单</van-button>
+
 
         <!-- 底部弹出层 -->
         <van-popup v-model:show="showHospital" position="bottom" :style="{ height: '30%' }">
@@ -43,6 +69,10 @@
         <van-popup v-model:show="showStartTime" position="bottom" :style="{ height: '30%' }">
             <van-date-picker @confirm="showTimeConfirm" @cancel="showStartTime = false" title="选择日期"
                 :min-date="minDate" />
+        </van-popup>
+        <van-popup v-model:show="showCompanion" position="bottom" :style="{ height: '30%' }">
+            <van-picker :columns="showCompanionColumns" @confirm="showCompanionConfirm"
+                @cancel="showCompanion = false" />
         </van-popup>
 
     </div>
@@ -110,6 +140,23 @@ const showTimeConfirm = (item) => {
     currentDate.value = dateStr
     form.starttime = new Date(dateStr).getTime()
     showStartTime.value = false
+}
+
+// 选择陪诊师
+const showCompanion = ref(false)
+const showCompanionColumns = computed(() => {
+    return createInfo.companion.map(item => {
+        return { text: item.name, value: item.id }
+    })
+})
+const companionName = ref()
+const showCompanionConfirm = (item) => {
+    form.companion_id = item.selectedOptions[0].value
+    companionName.value = item.selectedOptions[0].text
+    showCompanion.value = false
+}
+const submit = () => {
+
 }
 </script>
 <style scoped>

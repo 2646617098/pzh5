@@ -16,4 +16,9 @@ export default {
     createOrder(data) {
         return request.post('/createOrder', data)
     },
+    // 订单列表
+    orderList(params) {
+        // params是get请求的参数，会附加在url后面
+        return request.get('/order/list', { params })
+    },
 }

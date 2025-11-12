@@ -8,7 +8,7 @@
             <van-tab title="已完成" name="3" />
             <van-tab title="已取消" name="4" />
         </van-tabs>
-        <van-row v-for="item in order" :key="item.out_trade_no">
+        <van-row v-for="item in order" :key="item.out_trade_no" @click="goDetail(item)">
             <van-col span="5">
                 <van-image width="50" height="59" radius="5" :src="item.serviceImg" />
             </van-col>
@@ -32,6 +32,7 @@
 <script setup>
 import { getCurrentInstance, onMounted, ref } from 'vue'
 import counter from '../../components/counter.vue'
+import { useRouter } from 'vue-router'
 
 const colorMap = {
     '待支付': '#ffa200',
@@ -58,9 +59,10 @@ const getOrderList = async (state) => {
 const onClickTab = (item) => {
     getOrderList(item.name)
 }
+const router = useRouter()
 // 跳转详情
 const goDetail = (item) => {
-
+    router.push(`/detail?oid=${item.out_trade_no}`)
 }
 
 const active = ref("")

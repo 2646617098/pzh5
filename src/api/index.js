@@ -21,4 +21,8 @@ export default {
         // params是get请求的参数，会附加在url后面
         return request.get('/order/list', { params })
     },
+    // 订单详情
+    orderDetail(params){
+        return request.get('/order/detail', { params })
+    },
 }

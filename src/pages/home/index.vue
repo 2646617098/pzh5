@@ -4,8 +4,7 @@
             中部地区
             <van-icon name="arrow" />
         </div>
-        <van-search v-model="searchValue" placeholder="请输入搜索关键词" wrap-with-form show-action @search="onSearch"
-            shape="round" />
+        <van-search v-model="searchValue" placeholder="请输入搜索关键词" wrap-with-form show-action shape="round" />
     </div>
     <van-swipe class="my-swiper" height="170px" :autoplay="3000" indicator-color="white">
         <van-swipe-item v-for="item in homeData.slides" :key="item.id">

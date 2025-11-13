@@ -68,6 +68,9 @@ const goOrder = () => {
 // 点击登出弹窗
 const show = ref(false)
 const logout = () => {
+    localStorage.removeItem('h5_userInfo')
+    localStorage.removeItem('h5_token')
+    router.push('/login')
 }   
 </script>
 <style lang="less" scoped>
